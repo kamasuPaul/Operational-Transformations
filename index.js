@@ -4,19 +4,19 @@ function isValid(stale, latest, operationJson) {
     let cursorPosition = 0;
     let illegalSkips = 0;
     //get operations
-    operations = eval(operationJson);
+    const operations = eval(operationJson);
     //appy each operatison on the stale string
     for (let i = 0; i < operations.length; i++) {
         let operation = operations[i];
 
-        if (operation.op == "insert") {
+        if (operation.op == "insert") {//insert operation
             const chars = operation.chars;
             const output = [stale.slice(0, cursorPosition), chars, stale.slice(cursorPosition)].join('');
             stale = output;
             //move the cursor position to the insert position.
             cursorPosition = cursorPosition + chars.length;
         }
-        if (operation.op == "skip") {
+        if (operation.op == "skip") {//skip operation
             const count = operation.count;
             if (cursorPosition + count <= stale.length) {
                 cursorPosition = cursorPosition + count;
@@ -24,7 +24,7 @@ function isValid(stale, latest, operationJson) {
                 illegalSkips = illegalSkips + 1;
             }
         }
-        if (operation.op == "delete") {
+        if (operation.op == "delete") {//delete operation
             const count = operation.count;
             if (cursorPosition + count < stale.length) {
                 stale = stale.slice(0, cursorPosition) + stale.slice(cursorPosition + count);
@@ -34,7 +34,7 @@ function isValid(stale, latest, operationJson) {
 
 
     }
-    //get output of stale string
+    //get output of operations applied to stale string
     //compare it with latest string
     let isValid = latest.localeCompare(stale) == 0 ? true : false;
     //check for illegalSkips
@@ -42,7 +42,7 @@ function isValid(stale, latest, operationJson) {
         isValid = false;
     }
     console.log(isValid)
-    //return bolean response
+    //return valid(true) or invalid(false)
     return isValid;
 }
 let output = isValid(
